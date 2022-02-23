@@ -1,4 +1,4 @@
-package vagrant.myrpc.entity;
+package vagrant.myrpc.enumeration;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,7 @@
 package vagrant.myrpc.entity;
 
 import lombok.Data;
+import vagrant.myrpc.enumeration.ResponseCode;
 
 import java.io.Serializable;
 
