@@ -14,6 +14,7 @@ import vagrant.myrpc.codec.CommonEncoder;
 import vagrant.myrpc.entity.RpcRequest;
 import vagrant.myrpc.entity.RpcResponse;
 import vagrant.myrpc.serializer.JsonSerializer;
+import vagrant.myrpc.serializer.KryoSerializer;
 
 @Slf4j
 public class NettyClient implements Client{
@@ -39,7 +40,8 @@ public class NettyClient implements Client{
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
                         socketChannel.pipeline().addLast(new CommonDecoder());
-                        socketChannel.pipeline().addLast(new CommonEncoder(new JsonSerializer()));
+//                        socketChannel.pipeline().addLast(new CommonEncoder(new JsonSerializer()));
+                        socketChannel.pipeline().addLast(new CommonEncoder(new KryoSerializer()));
                         socketChannel.pipeline().addLast(new NettyClientHandler());
                     }
                 });

@@ -7,6 +7,7 @@ import vagrant.myrpc.entity.RpcRequest;
 import vagrant.myrpc.enumeration.SerializerCode;
 import vagrant.myrpc.exception.RpcError;
 import vagrant.myrpc.exception.RpcException;
+import vagrant.myrpc.exception.SerializeException;
 
 import java.io.IOException;
 
@@ -22,7 +23,7 @@ public class JsonSerializer implements CommonSerializer{
         } catch (JsonProcessingException e) {
             log.error("序列化时发生错误！异常为：" + e.getMessage());
             e.printStackTrace();
-            throw new RpcException(RpcError.SERIALIZE_FAILED);
+            throw new SerializeException("序列化时发生错误！");
         }
     }
 
@@ -37,7 +38,7 @@ public class JsonSerializer implements CommonSerializer{
         } catch (IOException e) {
             log.error("反序列化时出错！异常为：" + e.getMessage());
             e.printStackTrace();
-            throw new RpcException(RpcError.DESERIALIZE_FAIL);
+            throw new SerializeException("反序列化时出错！");
         }
     }
 

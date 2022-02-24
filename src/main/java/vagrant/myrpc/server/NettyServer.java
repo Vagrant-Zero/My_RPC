@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import vagrant.myrpc.codec.CommonDecoder;
 import vagrant.myrpc.codec.CommonEncoder;
 import vagrant.myrpc.serializer.JsonSerializer;
+import vagrant.myrpc.serializer.KryoSerializer;
 import vagrant.myrpc.server.handler.NettyServerHandler;
 
 @Slf4j
@@ -35,7 +36,8 @@ public class NettyServer implements Server{
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(new CommonDecoder());
-                            socketChannel.pipeline().addLast(new CommonEncoder(new JsonSerializer()));
+//                            socketChannel.pipeline().addLast(new CommonEncoder(new JsonSerializer()));
+                            socketChannel.pipeline().addLast(new CommonEncoder(new KryoSerializer())); // 这里可以优化为配置文件的配置，见聊天室项目
                             socketChannel.pipeline().addLast(new NettyServerHandler());
                         }
                     });
