@@ -30,7 +30,7 @@ public class RequestHandler {
             method = service.getClass().getMethod(rpcRequest.getMethodName(), rpcRequest.getParameterTypes());
             return method.invoke(service, rpcRequest.getParameters());
         } catch (NoSuchMethodException e) {
-            return RpcResponse.fail(ResponseCode.NOT_FOUND_METHOD);
+            return RpcResponse.fail(ResponseCode.NOT_FOUND_METHOD, rpcRequest.getRequestId());
         }
     }
 }

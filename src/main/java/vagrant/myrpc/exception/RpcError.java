@@ -13,7 +13,13 @@ public enum RpcError {
     DESERIALIZE_FAIL("反序列化时失败"),
     UNKNOWN_PROTOCOL("未识别的协议包"),
     UNKNOWN_PACKAGE_TYPE("未识别的数据包"),
-    UNKNOWN_SERIALIZER("未识别的反序列化器");
+    CLIENT_CONNECT_SERVER_FAILURE("客户端连接服务端失败"),
+    SERIALIZER_NOT_FOUND("找不到序列化器"),
+    UNKNOWN_SERIALIZER("未识别的反序列化器"),
+    RESPONSE_NOT_MATCH("响应与请求号不匹配"),
+    FAILED_TO_CONNECT_TO_SERVICE_REGISTRY("连接注册中心失败"),
+    REGISTER_SERVICE_FAILED("注册服务失败");
+
 
     private final String message;
 }

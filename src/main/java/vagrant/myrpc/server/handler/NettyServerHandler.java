@@ -8,19 +8,18 @@ import io.netty.util.ReferenceCountUtil;
 import lombok.extern.slf4j.Slf4j;
 import vagrant.myrpc.entity.RpcRequest;
 import vagrant.myrpc.entity.RpcResponse;
-import vagrant.myrpc.enumeration.ResponseCode;
 import vagrant.myrpc.server.RequestHandler;
-import vagrant.myrpc.server.registry.DefaultServiceRegistry;
-import vagrant.myrpc.server.registry.ServiceRegistry;
+import vagrant.myrpc.server.provider.ServiceProviderImpl;
+import vagrant.myrpc.server.provider.ServiceProvider;
 
 @Slf4j
 public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> {
     private static RequestHandler requestHandler;
-    private static ServiceRegistry serviceRegistry;
+    private static ServiceProvider serviceProvider;
 
     static {
         requestHandler = new RequestHandler();
-        serviceRegistry = new DefaultServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
     }
 
     @Override
@@ -28,9 +27,9 @@ public class NettyServerHandler extends SimpleChannelInboundHandler<RpcRequest> 
         try {
             log.debug("服务器接收到消息：{}", request);
             String interfaceName = request.getInterfaceName();
-            Object service = serviceRegistry.getService(interfaceName);
+            Object service = serviceProvider.getServiceProvider(interfaceName);
             Object result = requestHandler.handle(request, service);
-            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result));
+            ChannelFuture future = ctx.writeAndFlush(RpcResponse.success(result, request.getRequestId()));
             future.addListener(ChannelFutureListener.CLOSE);
         } finally {
             ReferenceCountUtil.release(request);

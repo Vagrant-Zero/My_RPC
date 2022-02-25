@@ -13,15 +13,51 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.extern.slf4j.Slf4j;
 import vagrant.myrpc.codec.CommonDecoder;
 import vagrant.myrpc.codec.CommonEncoder;
+import vagrant.myrpc.exception.RpcError;
+import vagrant.myrpc.exception.RpcException;
+import vagrant.myrpc.register.NacosServiceRegistry;
+import vagrant.myrpc.register.ServiceRegistry;
+import vagrant.myrpc.serializer.CommonSerializer;
 import vagrant.myrpc.serializer.JsonSerializer;
 import vagrant.myrpc.serializer.KryoSerializer;
 import vagrant.myrpc.server.handler.NettyServerHandler;
+import vagrant.myrpc.server.provider.ServiceProvider;
+import vagrant.myrpc.server.provider.ServiceProviderImpl;
+
+import java.net.InetSocketAddress;
 
 @Slf4j
 public class NettyServer implements Server{
 
+    private final String host;
+    private final int port;
+
+    private final ServiceRegistry serviceRegistry; // 注册中心
+    private final ServiceProvider serviceProvider; // 本地注册表
+
+    private CommonSerializer serializer; // 序列化器
+
+    public NettyServer(String host, int port) {
+        this.host = host;
+        this.port = port;
+        serviceRegistry = new NacosServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
+    }
+
+    // 没有像作者一样在这个方法里面调用start（）方法，而是单独 启动！
     @Override
-    public void start(int port) {
+    public <T> void publishService(Object service, Class<T> serviceClass) {
+        if(serializer == null) {
+            log.error("未设置序列化器！");
+            throw new RpcException(RpcError.SERIALIZER_NOT_FOUND);
+        }
+        serviceProvider.addServiceProvider(service);
+        serviceRegistry.register(serviceClass.getCanonicalName(), new InetSocketAddress(host, port));
+    }
+
+
+    @Override
+    public void start() {
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
         try {
@@ -37,11 +73,11 @@ public class NettyServer implements Server{
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline().addLast(new CommonDecoder());
 //                            socketChannel.pipeline().addLast(new CommonEncoder(new JsonSerializer()));
-                            socketChannel.pipeline().addLast(new CommonEncoder(new KryoSerializer())); // 这里可以优化为配置文件的配置，见聊天室项目
+                            socketChannel.pipeline().addLast(new CommonEncoder(serializer)); // 这里可以优化为配置文件的配置，见聊天室项目
                             socketChannel.pipeline().addLast(new NettyServerHandler());
                         }
                     });
-            ChannelFuture future = serverBootstrap.bind(port).sync();
+            ChannelFuture future = serverBootstrap.bind(host, port).sync();
             future.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             log.error("启动服务器时有异常！" + e.getMessage());
@@ -52,5 +88,10 @@ public class NettyServer implements Server{
         }
 
 
+    }
+
+    @Override
+    public void setSerializer(CommonSerializer serializer) {
+        this.serializer = serializer;
     }
 }

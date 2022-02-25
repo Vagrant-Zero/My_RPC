@@ -1,4 +1,4 @@
-package vagrant.myrpc.server.registry;
+package vagrant.myrpc.server.provider;
 
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -11,12 +11,12 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class DefaultServiceRegistry implements ServiceRegistry{
+public class ServiceProviderImpl implements ServiceProvider {
     private static Set<String> registeredService = new HashSet<>(); // 修改为全局
     private static Map<String, Object> serviceMap = new ConcurrentHashMap<>(); // 修改为全局
 
     @Override
-    public synchronized <T> void register(@NonNull T service) {
+    public synchronized <T> void addServiceProvider(@NonNull T service) {
         String serviceName = service.getClass().getCanonicalName();
         if(registeredService.contains(serviceName)) {
             return; // 重复添加不会报错，此处实现为直接返回
@@ -33,7 +33,7 @@ public class DefaultServiceRegistry implements ServiceRegistry{
     }
 
     @Override
-    public synchronized Object getService(String serviceName) {
+    public synchronized Object getServiceProvider(String serviceName) {
         Object service = serviceMap.get(serviceName);
         if(service == null) {
             throw new RpcException(RpcError.SERVICE_NOT_FOUND);

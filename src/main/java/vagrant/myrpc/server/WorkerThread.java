@@ -30,7 +30,7 @@ public class WorkerThread implements Runnable{
             RpcRequest request = (RpcRequest)ois.readObject();
             Method method = service.getClass().getMethod(request.getMethodName(), request.getParameterTypes());
             Object returnValue = method.invoke(service, request.getParameters());
-            oos.writeObject(RpcResponse.success(returnValue));
+            oos.writeObject(RpcResponse.success(returnValue, request.getRequestId()));
             oos.flush();
         } catch (IOException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             log.error("调用时有错误发生！");

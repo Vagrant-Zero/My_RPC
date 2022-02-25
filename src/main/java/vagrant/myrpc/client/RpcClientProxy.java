@@ -7,6 +7,7 @@ import vagrant.myrpc.entity.RpcRequest;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.UUID;
 
 /**
  * 客户端代理对象
@@ -41,7 +42,7 @@ public class RpcClientProxy implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         log.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
         // 封装请求
-        RpcRequest request = new RpcRequest(method.getDeclaringClass().getName(),
+        RpcRequest request = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
                 method.getName(), method.getParameterTypes(), args);
         // 发送请求
         return client.sendRequest(request);

@@ -34,7 +34,7 @@ public class KryoSerializer implements CommonSerializer{
          * 关闭注册行为，需要保证没有进行过这样的设置：
          * kryo.setRegistrationRequired(true);
          * 并且要保证没有显式地注册任何一个类，例如：
-         * kryo.register(ArrayList.class);
+         * kryo.addServiceProvider(ArrayList.class);
          * 同时保证以上二者，才真正地关闭了注册行为。
          */
         kryo.setRegistrationRequired(false); // 虽然这里的版本是单机，但也关闭了注册。
