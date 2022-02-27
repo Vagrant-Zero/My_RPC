@@ -2,6 +2,9 @@ package vagrant.myrpc.register;
 
 import java.net.InetSocketAddress;
 
+/**
+ * 提供给服务端，用于服务的注册
+ */
 public interface ServiceRegistry {
 
     /**
@@ -11,12 +14,7 @@ public interface ServiceRegistry {
      */
     void register(String serviceName, InetSocketAddress inetSocketAddress);
 
-    /**
-     * 根据服务名查找提供服务的地址
-     * @param serviceName 服务名称
-     * @return 提供服务的地址
-     */
-    InetSocketAddress lookupService(String serviceName);
+
 
 
 }

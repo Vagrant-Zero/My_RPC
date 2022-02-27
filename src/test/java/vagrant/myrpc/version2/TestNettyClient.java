@@ -18,13 +18,13 @@ public class TestNettyClient {
 //        System.out.println(res);
 
         // 5.0
-        Client client = new NettyClient();
-        client.setSerializer(new KryoSerializer());
-        RpcClientProxy proxy = new RpcClientProxy(client);
-        HelloService helloService = proxy.getProxy(HelloService.class);
-        HelloObject object = new HelloObject(12, "This is a message");
-        String res = helloService.sayHello(object);
-        System.out.println(res);
+//        Client client = new NettyClient();
+//        client.setSerializer(new KryoSerializer());
+//        RpcClientProxy proxy = new RpcClientProxy(client);
+//        HelloService helloService = proxy.getProxy(HelloService.class);
+//        HelloObject object = new HelloObject(12, "This is a message");
+//        String res = helloService.sayHello(object);
+//        System.out.println(res);
 
     }
 }

@@ -15,6 +15,7 @@ import vagrant.myrpc.codec.CommonDecoder;
 import vagrant.myrpc.codec.CommonEncoder;
 import vagrant.myrpc.exception.RpcError;
 import vagrant.myrpc.exception.RpcException;
+import vagrant.myrpc.hook.ShutdownHook;
 import vagrant.myrpc.register.NacosServiceRegistry;
 import vagrant.myrpc.register.ServiceRegistry;
 import vagrant.myrpc.serializer.CommonSerializer;
@@ -44,6 +45,14 @@ public class NettyServer implements Server{
         serviceProvider = new ServiceProviderImpl();
     }
 
+    public NettyServer(String host, int port, Integer serializer) {
+        this.host = host;
+        this.port = port;
+        serviceRegistry = new NacosServiceRegistry();
+        serviceProvider = new ServiceProviderImpl();
+        this.serializer = CommonSerializer.getByCode(serializer);
+    }
+
     // 没有像作者一样在这个方法里面调用start（）方法，而是单独 启动！
     @Override
     public <T> void publishService(Object service, Class<T> serviceClass) {
@@ -58,6 +67,7 @@ public class NettyServer implements Server{
 
     @Override
     public void start() {
+        ShutdownHook.getShutdownHook().addClearAllHook(); // 添加回调事件：即在服务端关闭时，自动注销Nacos的所有服务
         EventLoopGroup boss = new NioEventLoopGroup();
         EventLoopGroup worker = new NioEventLoopGroup();
         try {
@@ -90,8 +100,8 @@ public class NettyServer implements Server{
 
     }
 
-    @Override
-    public void setSerializer(CommonSerializer serializer) {
-        this.serializer = serializer;
-    }
+//    @Override
+//    public void setSerializer(CommonSerializer serializer) {
+//        this.serializer = serializer;
+//    }
 }

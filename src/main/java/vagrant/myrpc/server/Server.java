@@ -3,6 +3,9 @@ package vagrant.myrpc.server;
 import vagrant.myrpc.serializer.CommonSerializer;
 
 public interface Server {
+
+    int DEFAULT_SERIALIZER = CommonSerializer.KRYO_SERIALIZER;
+
     /**
      * 启动服务器
      */
@@ -16,5 +19,5 @@ public interface Server {
      */
     <T> void publishService(Object service, Class<T> serviceClass);
 
-    void setSerializer(CommonSerializer serializer);
+//    void setSerializer(CommonSerializer serializer);
 }

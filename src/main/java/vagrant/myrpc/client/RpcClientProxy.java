@@ -3,11 +3,15 @@ package vagrant.myrpc.client;
 
 import lombok.extern.slf4j.Slf4j;
 import vagrant.myrpc.entity.RpcRequest;
+import vagrant.myrpc.entity.RpcResponse;
+import vagrant.myrpc.util.RpcMessageChecker;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * 客户端代理对象
@@ -40,14 +44,29 @@ public class RpcClientProxy implements InvocationHandler {
      */
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        log.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
-        // 封装请求
-        RpcRequest request = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
-                method.getName(), method.getParameterTypes(), args);
-        // 发送请求
-        return client.sendRequest(request);
+//        log.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
+//        // 封装请求
+//        RpcRequest request = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
+//                method.getName(), method.getParameterTypes(), args);
+//        // 发送请求
+//        return client.sendRequest(request);
 //        RpcClient rpcClient = new RpcClient();
 //        Object response = ((RpcResponse) rpcClient.sendRequest(request, host, port)).getData();
 //        return response;
+        log.info("调用方法: {}#{}", method.getDeclaringClass().getName(), method.getName());
+        RpcRequest rpcRequest = new RpcRequest(UUID.randomUUID().toString(), method.getDeclaringClass().getName(),
+                method.getName(), method.getParameterTypes(), args, false);
+        RpcResponse rpcResponse = null;
+        if (client instanceof NettyClient) { //只有一种实现
+            CompletableFuture<RpcResponse> completableFuture = (CompletableFuture<RpcResponse>) client.sendRequest(rpcRequest);
+            try {
+                rpcResponse = completableFuture.get();
+            } catch (InterruptedException | ExecutionException e) {
+                log.error("方法调用请求发送失败", e);
+                return null;
+            }
+        }
+        RpcMessageChecker.check(rpcRequest, rpcResponse);
+        return rpcResponse.getData();
     }
 }
