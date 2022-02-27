@@ -68,7 +68,9 @@ public class NettyClient implements Client{
      * 初始化bootstarp
      */
     static {
-
+        /**
+         * 以下三行应该是可以不需要的，因为channel是从工厂（ChannelProvider）里面提供的。
+         */
 //        group = new NioEventLoopGroup();
 //        bootstrap = new Bootstrap();
 //        bootstrap.group(group)
