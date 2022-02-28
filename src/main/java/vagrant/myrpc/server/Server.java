@@ -14,10 +14,10 @@ public interface Server {
     /**
      * 向Nacos注册服务
      * @param service
-     * @param serviceClass
+     * @param serviceName
      * @param <T>
      */
-    <T> void publishService(Object service, Class<T> serviceClass);
+    <T> void publishService(Object service, String serviceName);
 
 //    void setSerializer(CommonSerializer serializer);
 }

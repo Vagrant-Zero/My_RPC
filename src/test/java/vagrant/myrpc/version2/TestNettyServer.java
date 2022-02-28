@@ -1,13 +1,5 @@
 package vagrant.myrpc.version2;
 
-import vagrant.myrpc.api.HelloObject;
-import vagrant.myrpc.api.HelloService;
-import vagrant.myrpc.api.HelloServiceImpl;
-import vagrant.myrpc.serializer.KryoSerializer;
-import vagrant.myrpc.server.NettyServer;
-import vagrant.myrpc.server.provider.ServiceProviderImpl;
-import vagrant.myrpc.server.provider.ServiceProvider;
-
 public class TestNettyServer {
     public static void main(String[] args) {
         // 4.0

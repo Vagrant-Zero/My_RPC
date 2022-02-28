@@ -1,11 +1,5 @@
 package vagrant.myrpc.version1;
 
-import vagrant.myrpc.api.HelloService;
-import vagrant.myrpc.api.HelloServiceImpl;
-import vagrant.myrpc.server.RpcServer;
-import vagrant.myrpc.server.provider.ServiceProviderImpl;
-import vagrant.myrpc.server.provider.ServiceProvider;
-
 public class TestServer {
     public static void main(String[] args) {
         /**
@@ -18,10 +12,10 @@ public class TestServer {
         /**
          * 2.0
          */
-        HelloService service = new HelloServiceImpl();
-        ServiceProvider serviceProvider = new ServiceProviderImpl();
-        serviceProvider.addServiceProvider(service);
-        RpcServer server = new RpcServer(serviceProvider);
-        server.start(9000);
+//        HelloService service = new HelloServiceImpl();
+//        ServiceProvider serviceProvider = new ServiceProviderImpl();
+//        serviceProvider.addServiceProvider(service);
+//        RpcServer server = new RpcServer(serviceProvider);
+//        server.start(9000);
     }
 }
